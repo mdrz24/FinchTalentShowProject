@@ -15,117 +15,294 @@ namespace talent_show
     // Dated Created: 2/18/2020
     // Last Modified: 2/26/2020
     //
-    // **************************************************
+    // **************************************************   
 
-    class Program
+    }
+class Program
+{
+
+    /// <summary>
+    /// first method run when the app starts up
+    /// </summary>
+    /// <param name="args"></param>
+    static void Main(string[] args)
     {
+        SetTheme();
 
-        /// <summary>
-        /// first method run when the app starts up
-        /// </summary>
-        /// <param name="args"></param>
-        static void Main(string[] args)
+        DisplayWelcomeScreen();
+        DisplayMenuScreen();
+        DisplayClosingScreen();
+    }
+
+    /// <summary>
+    /// setup the console theme
+    /// </summary>
+    static void SetTheme()
+    {
+        Console.ForegroundColor = ConsoleColor.Black;
+        Console.BackgroundColor = ConsoleColor.Yellow;
+    }
+
+    /// <summary>
+    /// *****************************************************************
+    /// *                     Main Menu                                 *
+    /// *****************************************************************
+    /// </summary>
+    static void DisplayMenuScreen()
+    {
+        Console.CursorVisible = true;
+
+        bool quitApplication = false;
+        string menuChoice;
+
+
+        Finch finchRobot = new Finch();
+
+        do
         {
-            SetTheme();
+            DisplayScreenHeader("Main Menu");
 
-            DisplayWelcomeScreen();
-            DisplayMenuScreen();
-            DisplayClosingScreen();
-        }
+            //
+            // get user menu choice
+            //
+            Console.WriteLine("\ta) Connect Finch Robot");
+            Console.WriteLine("\tb) Talent Show");
+            Console.WriteLine("\tc) Data Recorder");
+            Console.WriteLine("\td) Alarm System");
+            Console.WriteLine("\te) User Programming");
+            Console.WriteLine("\tf) Disconnect Finch Robot");
+            Console.WriteLine("\tg) Quit");
+            Console.Write("\t\tEnter Choice:");
+            menuChoice = Console.ReadLine().ToLower();
 
-        /// <summary>
-        /// setup the console theme
-        /// </summary>
-        static void SetTheme()
-        {
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.BackgroundColor = ConsoleColor.Yellow;
-        }
-
-        /// <summary>
-        /// *****************************************************************
-        /// *                     Main Menu                                 *
-        /// *****************************************************************
-        /// </summary>
-        static void DisplayMenuScreen()
-        {
-            Console.CursorVisible = true;
-
-            bool quitApplication = false;
-            string menuChoice;
-            
-
-            Finch finchRobot = new Finch();
-
-            do
+            //
+            // process user menu choice
+            //
+            switch (menuChoice)
             {
-                DisplayScreenHeader("Main Menu");
+                case "a":
+                    DisplayConnectFinchRobot(finchRobot);
+                    break;
 
-                //
-                // get user menu choice
-                //
-                Console.WriteLine("\ta) Connect Finch Robot");
-                Console.WriteLine("\tb) Talent Show");
-                Console.WriteLine("\tc) Data Recorder");
-                Console.WriteLine("\td) Alarm System");
-                Console.WriteLine("\te) User Programming");
-                Console.WriteLine("\tf) Disconnect Finch Robot");
-                Console.WriteLine("\tg) Quit");
-                Console.Write("\t\tEnter Choice:");
-                menuChoice = Console.ReadLine().ToLower();
+                case "b":
+                    DisplayTalentShowMenuScreen(finchRobot);
+                    break;
 
-                //
-                // process user menu choice
-                //
-                switch (menuChoice)
-                {
-                    case "a":
-                        DisplayConnectFinchRobot(finchRobot);
-                        break;
+                case "c":
+                    DisplayDataRecorderScreen(finchRobot);
+                    break;
 
-                    case "b":
-                        DisplayTalentShowMenuScreen(finchRobot);
-                        break;
+                case "d":
 
-                    case "c":
+                    break;
 
-                        break;
+                case "e":
 
-                    case "d":
+                    break;
 
-                        break;
+                case "f":
+                    DisplayDisconnectFinchRobot(finchRobot);
+                    break;
 
-                    case "e":
+                case "g":
+                    DisplayDisconnectFinchRobot(finchRobot);
+                    quitApplication = true;
+                    break;
 
-                        break;
+                default:
+                    Console.WriteLine();
+                    Console.WriteLine("\tPlease enter a letter for the menu choice.");
+                    DisplayContinuePrompt();
+                    break;
+            }
 
-                    case "f":
-                        DisplayDisconnectFinchRobot(finchRobot);
-                        break;
+        } while (!quitApplication);
+    }
 
-                    case "g":
-                        DisplayDisconnectFinchRobot(finchRobot);
-                        quitApplication = true;
-                        break;
+    #region Data Recorder
+    //
+    // data recorder menu
+    //
+    static void DisplayDataRecorderScreen(Finch finchRobot)
+    {
+        int numberOfDataPoints = 0;
+        double dataPointFrequency = 0;
+        double[] temperatures = null;
+        Console.CursorVisible = true;
 
-                    default:
-                        Console.WriteLine();
-                        Console.WriteLine("\tPlease enter a letter for the menu choice.");
-                        DisplayContinuePrompt();
-                        break;
-                }
+        bool quitTalentShowMenu = false;
+        string menuChoice;
 
-            } while (!quitApplication);
+        do
+        {
+            DisplayScreenHeader("Talent Show Menu");
+
+            //
+            // get user menu choice
+            //
+            Console.WriteLine("\ta) number of data points");
+            Console.WriteLine("\tb) frequency of data points");
+            Console.WriteLine("\tc) get data");
+            Console.WriteLine("\td) Show data ");
+            Console.WriteLine("\tg) Main Menu");
+            Console.Write("\t\tEnter Choice:");
+            menuChoice = Console.ReadLine().ToLower();
+
+            //
+            // process user menu choice
+            //
+            switch (menuChoice)
+            {
+                case "a":
+                    numberOfDataPoints = DisplayNumberOfDataPointsScreen();
+                    break;
+
+                case "b":
+                    dataPointFrequency = DisplayDataFrequency();
+                    break;
+
+                case "c":
+                    temperatures = DisplayGetData(numberOfDataPoints, dataPointFrequency, finchRobot);
+                    break;
+
+                case "d":
+                    DisplayShowData(temperatures);
+                    break;
+
+                case "g":
+                    quitTalentShowMenu = true;
+                    break;
+
+                default:
+                    Console.WriteLine();
+                    Console.WriteLine("\tPlease enter a letter for the menu choice.");
+                    DisplayContinuePrompt();
+                    break;
+            }
+
+        } while (!quitTalentShowMenu);
+
+    }
+
+    static void DisplayShowData(double[] temperatures)
+    {
+        DisplayScreenHeader("Show Data");
+
+        DisplayTable(temperatures);
+
+        DisplayContinuePrompt();
+    }
+
+    static void DisplayTable(double[] temperatures)
+    {
+        //
+        // display table headers
+        //
+        Console.WriteLine(
+            "Recording #".PadLeft(15) +
+            "Temperature".PadLeft(15));
+
+        Console.WriteLine(
+            "-----------".PadLeft(15) +
+            "-----------".PadLeft(15));
+
+        //
+        // display table data
+        //
+        for (int index = 0; index < temperatures.Length; index++)
+        {
+            Console.WriteLine(
+            (index + 1).ToString().PadLeft(15) +
+            temperatures[index].ToString("n2").PadLeft(15));
+        }
+    }
+    static double[] DisplayGetData(int numberOfDataPoints, double dataPointFrequency, Finch finchRobot)
+    {
+        double[] temperatures = new double[numberOfDataPoints];
+        DisplayScreenHeader("Get Data");
+
+        Console.WriteLine($"\tNumber of data points: {numberOfDataPoints}");
+        Console.WriteLine($"\tData point frequency: {dataPointFrequency}");
+        Console.WriteLine();
+        Console.WriteLine("The Finch robot will now record the temperature data.");
+        DisplayContinuePrompt();
+
+        for (int index = 0; index < numberOfDataPoints; index++)
+        {
+            temperatures[index] = finchRobot.getTemperature();
+            Console.WriteLine($"\tReading{index + 1}: {temperatures[index].ToString("n2")}");
+            int waitInSeconds = (int)(dataPointFrequency * 1000);
+            finchRobot.wait(waitInSeconds);
         }
 
-        #region TALENT SHOW
+        DisplayContinuePrompt();
+        DisplayScreenHeader("Get Data");
 
-        /// <summary>
-        /// *****************************************************************
-        /// *                     Talent Show Menu                          *
-        /// *****************************************************************
-        /// </summary>
-        static void DisplayTalentShowMenuScreen(Finch myFinch)
+        Console.WriteLine();
+        Console.WriteLine("\tTempertures Table");
+        Console.WriteLine();
+        DisplayTable(temperatures);
+
+        DisplayContinuePrompt();
+
+        return temperatures;
+    }
+
+    /// <summary>
+    /// get the frequency of data points 
+    /// </summary>
+    /// <returns>frequency of data points</returns>
+    static double DisplayDataFrequency()
+    {
+        double dataPointFrequency;
+        string userResponse;
+
+        DisplayScreenHeader("Data Point Frequency");
+
+        Console.Write(" Frequency of Data Points: ");
+        userResponse =Console.ReadLine();
+
+        //validate user input
+        double.TryParse(userResponse, out dataPointFrequency);
+
+        DisplayContinuePrompt();
+
+        return dataPointFrequency;
+
+    }
+
+    /// <summary>
+    /// get data from the user
+    /// </summary>
+    /// <returns></returns>
+    static int DisplayNumberOfDataPointsScreen()
+    {
+        int numberOfDataPoints;
+        string userResponse;
+
+        DisplayScreenHeader("Number of Data Points");
+
+        Console.WriteLine("Number of Data Points");
+        userResponse = Console.ReadLine();
+
+        //validate user input
+        int.TryParse(userResponse, out numberOfDataPoints);
+
+        DisplayContinuePrompt();
+
+        return numberOfDataPoints;
+    }
+
+    #endregion
+
+    #region TALENT SHOW
+
+    /// <summary>
+    /// *****************************************************************
+    /// *                     Talent Show Menu                          *
+    /// *****************************************************************
+    /// </summary>
+    static void DisplayTalentShowMenuScreen(Finch myFinch)
         {
             Console.CursorVisible = true;
 
@@ -374,4 +551,4 @@ namespace talent_show
 
             #endregion
         }
-    }
+    
